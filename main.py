@@ -1,17 +1,3 @@
-"""
-Волновой алгоритм Ли / Дейкстры для поиска кратчайшего пути в сетке.
-
-Особенности:
-- поддерживаются шаги длиной 1, sqrt(2), sqrt(5);
-- учитываются разные типы поверхности;
-- препятствия нельзя перепрыгивать;
-- есть GUI на Tkinter;
-- сетка и найденные пути сохраняются в SQL-хранилище SQLite.
-
-Запуск:
-    python main.py
-"""
-
 from __future__ import annotations
 
 import csv
@@ -84,9 +70,6 @@ DEFAULT_GRID: Grid = [
 ]
 
 
-# ========================= Работа с сеткой =========================
-
-
 def is_inside(grid: Grid, point: Point) -> bool:
     r, c = point
     return 0 <= r < len(grid) and 0 <= c < len(grid[0])
@@ -132,10 +115,6 @@ def save_grid_to_csv(grid: Grid, path: str) -> None:
     with open(path, "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f, delimiter=";")
         writer.writerows(grid)
-
-
-# ========================= Проверка препятствий на пути =========================
-
 
 def bresenham_cells(start: Point, end: Point) -> List[Point]:
     """Возвращает клетки, через которые проходит отрезок от start до end, включая end."""
@@ -195,10 +174,6 @@ def can_move(grid: Grid, start: Point, end: Point) -> bool:
 
     return True
 
-
-# ========================= Алгоритм поиска пути =========================
-
-
 def get_neighbors(grid: Grid, point: Point) -> Iterable[Tuple[Point, float]]:
     r, c = point
     for dr, dc, base_length in MOVES:
@@ -254,10 +229,6 @@ def find_shortest_path(grid: Grid, start: Point, goal: Point) -> Tuple[List[Poin
         path.append(previous[path[-1]])
     path.reverse()
     return path, distances[goal], distances
-
-
-# ========================= SQL-хранилище SQLite =========================
-
 
 class GridDatabase:
     def __init__(self, path: str = "lee_grid.db") -> None:
@@ -431,10 +402,6 @@ class GridDatabase:
 
     def close(self) -> None:
         self.conn.close()
-
-
-# ========================= GUI =========================
-
 
 class LeeApp:
     def __init__(self) -> None:
@@ -701,9 +668,6 @@ class LeeApp:
 
     def run(self) -> None:
         self.root.mainloop()
-
-
-# ========================= Дополнительный экспорт результата =========================
 
 
 def path_to_json(path: List[Point], total_cost: float) -> str:
